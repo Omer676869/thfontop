@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sound Trigger</title>
+  <style>
+    body { font-family: Arial; text-align: center; margin-top: 100px; }
+    button {
+      font-size: 40px;
+      padding: 20px 60px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Sound Trigger System</h1>
+<button id="trigger">PLAY SOUND ON ALL PCs</button>
+
+<script>
+// Send trigger to server
+document.getElementById("trigger").onclick = () => {
+  fetch("/api/trigger", { method: "POST" });
+};
+
+// Poll every 2 seconds
+setInterval(async () => {
+  const res = await fetch("/api/status");
+  const data = await res.json();
+
+  if (data.play && data.url) {
+    console.log("Playing sound:", data.url);
+    const audio = new Audio(data.url);
+    audio.play();
+  }
+}, 2000);
+</script>
+
+</body>
+</html>
