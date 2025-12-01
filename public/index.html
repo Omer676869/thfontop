@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Sound Trigger</title>
+  <title>Status Toggle</title>
   <style>
     body { font-family: Arial; text-align: center; margin-top: 100px; }
     button {
@@ -13,25 +13,22 @@
 </head>
 <body>
 
-<h1>Sound Trigger System</h1>
-<button id="trigger">PLAY SOUND ON ALL PCs</button>
+<h1>Status Toggle System</h1>
+<button id="toggleBtn">TOGGLE READY</button>
 
 <script>
-// Send trigger to server
-document.getElementById("trigger").onclick = () => {
-  fetch("/api/trigger", { method: "POST" });
+// Toggle status on server
+document.getElementById("toggleBtn").onclick = async () => {
+  const res = await fetch("/api/toggle", { method: "POST" });
+  const data = await res.json();
+  console.log("New state:", data.ready);
 };
 
-// Poll every 2 seconds
+// Poll and show current status
 setInterval(async () => {
   const res = await fetch("/api/status");
   const data = await res.json();
-
-  if (data.play && data.url) {
-    console.log("Playing sound:", data.url);
-    const audio = new Audio(data.url);
-    audio.play();
-  }
+  console.log("Current state:", data.ready);
 }, 2000);
 </script>
 
