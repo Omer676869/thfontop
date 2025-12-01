@@ -4,9 +4,6 @@ const app = express();
 
 app.use(express.json());
 
-// ---- SERVE STATIC FILES ----
-app.use(express.static(path.join(__dirname, "public")));
-
 let isReady = false;
 
 // ---- STATUS ENDPOINT ----
@@ -20,9 +17,14 @@ app.post("/api/toggle", (req, res) => {
   res.json({ ready: isReady ? "yes" : "no" });
 });
 
-// ---- SERVE j.vbs explicitly (optional) ----
+// ---- FORCE-DOWNLOAD j.vbs ----
 app.get("/j.vbs", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "j.vbs"));
+  const file = path.join(__dirname, "j.vbs");
+
+  res.setHeader("Content-Disposition", "attachment; filename=j.vbs");
+  res.setHeader("Content-Type", "application/octet-stream");
+
+  res.sendFile(file);
 });
 
 module.exports = app;
