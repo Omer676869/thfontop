@@ -3,23 +3,18 @@ const app = express();
 
 app.use(express.json());
 
-let shouldPlay = false;
-const SOUND_URL = "https://example.com/my-sound.mp3"; // <-- put your sound URL here
+let isReady = false; // starts as "no"
 
-// Each client checks this every 2 seconds
+// ---- STATUS ENDPOINT ----
 app.get("/api/status", (req, res) => {
-  if (shouldPlay) {
-    shouldPlay = false; // reset after triggering
-    res.json({ play: true, url: SOUND_URL });
-  } else {
-    res.json({ play: false });
-  }
+  res.json({ ready: isReady ? "yes" : "no" });
 });
 
-// When button is pressed on index.html
-app.post("/api/trigger", (req, res) => {
-  shouldPlay = true;
-  res.json({ ok: true });
+// ---- TOGGLE ENDPOINT ----
+// When button is pressed, flip yes/no
+app.post("/api/toggle", (req, res) => {
+  isReady = !isReady;
+  res.json({ ready: isReady ? "yes" : "no" });
 });
 
 module.exports = app;
